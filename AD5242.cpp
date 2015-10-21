@@ -81,7 +81,7 @@ uint8_t AD5242::getRDAC(uint8_t Channel)
 	return SingleByteI2CRead();
 }
 
-bool AD5242::setOutput(uint8_t Channel, bool OutputSetting)
+void AD5242::setOutput(uint8_t Channel, bool OutputSetting)
 {
 	Channel = constrain(Channel, 0, 1);
 	switch(Channel)
@@ -152,24 +152,23 @@ uint8_t AD5242::SingleByteI2CRead()
 	int SendSuccess = 5;
 	while (!MoveOn)
 	{
-	Wire.beginTransmission(Address);
-	Wire.write(CommandByte);
-	SendSuccess = Wire.endTransmission(I2C_STOP,I2CTimeout*2);
-	if(SendSuccess != 0)
-	{
-	  Wire.finish();
-	  Wire.resetBus();
-	  CurrentAttempt++;
-	  if (CurrentAttempt > MaxAttempts)
-	  {
-	    MoveOn = true;
-	    Serial.println("Unrecoverable I2C transmission error with AD5242.");
-	  }
-	}
-	else
-	{
-		MoveOn = true;
-	}
+		Wire.beginTransmission(Address);
+		Wire.write(CommandByte);
+		SendSuccess = Wire.endTransmission(I2C_STOP,I2CTimeout*2);
+		if(SendSuccess != 0)
+		{
+			Wire.finish();
+			Wire.resetBus();
+			CurrentAttempt++;
+			if (CurrentAttempt > MaxAttempts)
+			{
+				MoveOn = true;
+			}
+		}
+		else
+		{
+			MoveOn = true;
+		}
 	}
 	Wire.requestFrom(Address, 1, I2C_STOP, I2CTimeout*2);
     if (Wire.available())
@@ -183,32 +182,30 @@ uint8_t AD5242::SingleByteI2CRead()
 }
 
 void AD5242::SendI2CCommand()
-//two byte command call
 {
-  bool MoveOn = false;
-  const int MaxAttempts = 16;
-  int CurrentAttempt = 0;
-  int SendSuccess = 5;
-  while (!MoveOn)
-  {
-	Wire.beginTransmission(Address);
-	Wire.write(CommandByte);
-	Wire.write(WiperPosition);
-	SendSuccess = Wire.endTransmission(I2C_STOP,I2CTimeout*2);
-    if(SendSuccess != 0)
-    {
-      Wire.finish();
-      Wire.resetBus();
-      CurrentAttempt++;
-      if (CurrentAttempt > MaxAttempts)
-      {
-        MoveOn = true;
-        Serial.println("Unrecoverable I2C transmission error with AD5242.");
-      }
-    }
-    else
-    {
-    	MoveOn = true;
-    }
-  }
+	bool MoveOn = false;
+	const int MaxAttempts = 16;
+	int CurrentAttempt = 0;
+	int SendSuccess = 5;
+	while (!MoveOn)
+	{
+		Wire.beginTransmission(Address);
+		Wire.write(CommandByte);
+		Wire.write(WiperPosition);
+		SendSuccess = Wire.endTransmission(I2C_STOP,I2CTimeout*2);
+		if(SendSuccess != 0)
+		{
+			Wire.finish();
+			Wire.resetBus();
+			CurrentAttempt++;
+			if (CurrentAttempt > MaxAttempts)
+			{
+				MoveOn = true;
+			}
+		}
+		else
+		{
+			MoveOn = true;
+		}
+	}
 }
