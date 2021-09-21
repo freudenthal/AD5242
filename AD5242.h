@@ -33,8 +33,8 @@ class AD5242
 		uint8_t WiperPosition;
 		bool Output0;
 		bool Output1;
+		bool IsShutdown;
 		void SendI2CCommand();
 		uint8_t SingleByteI2CRead();
-		void SendI2CCommand();
 };
 #endif

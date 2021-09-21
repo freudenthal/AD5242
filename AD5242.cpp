@@ -43,18 +43,18 @@ bool AD5242::isConnected()
 {
 	int Status = 5;
 	Wire.beginTransmission(Address);
-    Status = Wire.endTransmission(I2C_STOP);
-    if (Status == 0)
-    {
-    	return true;
-    }
-    else
-    {
-    	return false;
-    }
+	Status = Wire.endTransmission(I2C_STOP);
+	if (Status == 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-uint8_t AD5242::setAddress(uint8_t address)
+void AD5242::setAddress(uint8_t address)
 {
 	Address = address;
 }
@@ -70,10 +70,10 @@ uint8_t AD5242::getRDAC(uint8_t Channel)
 	switch(Channel)
 	{
 		case 1:
-			bitWrite(CommandByte,AddressBit,0)
+			bitWrite(CommandByte,AddressBit,0);
 			break;
 		case 0:
-			bitWrite(CommandByte,AddressBit,1)
+			bitWrite(CommandByte,AddressBit,1);
 			break;
 		default:
 			break;
@@ -88,11 +88,11 @@ void AD5242::setOutput(uint8_t Channel, bool OutputSetting)
 	{
 		case 0:
 			Output0 = OutputSetting;
-			bitWrite(CommandByte,Output0Bit,OutputSetting)
+			bitWrite(CommandByte,Output0Bit,OutputSetting);
 			break;
 		case 1:
 			Output1 = OutputSetting;
-			bitWrite(CommandByte,Output1Bit,OutputSetting)
+			bitWrite(CommandByte,Output1Bit,OutputSetting);
 			break;
 		default:
 			break;
@@ -102,13 +102,13 @@ void AD5242::setOutput(uint8_t Channel, bool OutputSetting)
 
 void AD5242::setShutdown(bool Value)
 {
-	bitWrite(CommandByte,ShutdownBit,Value)
+	bitWrite(CommandByte,ShutdownBit,Value);
 	SendI2CCommand();
 }
 
 void AD5242::setMidScale(bool Value)
 {
-	bitWrite(CommandByte,ResetBit,Value)
+	bitWrite(CommandByte,ResetBit,Value);
 	SendI2CCommand();
 }
 
@@ -122,6 +122,7 @@ bool AD5242::getOutput(uint8_t Channel)
 		case 1:
 			return Output1;
 		default:
+			return 0;
 			break;
 	}
 }
@@ -132,15 +133,15 @@ void AD5242::setRDAC(uint8_t Channel, uint8_t Target)
 	switch(Channel)
 	{
 		case 0:
-			bitWrite(CommandByte,AddressBit,0)
+			bitWrite(CommandByte,AddressBit,0);
 			break;
 		case 1:
-			bitWrite(CommandByte,AddressBit,1)
+			bitWrite(CommandByte,AddressBit,1);
 			break;
 		default:
 			break;
 	}
-	MSBByte = Target;
+	WiperPosition = Target;
 	SendI2CCommand();
 }
 
@@ -171,9 +172,9 @@ uint8_t AD5242::SingleByteI2CRead()
 		}
 	}
 	Wire.requestFrom(Address, 1, I2C_STOP, I2CTimeout*2);
-    if (Wire.available())
-    {
-	    return Wire.readByte();
+	if (Wire.available())
+	{
+		return Wire.readByte();
 	}
 	else
 	{
